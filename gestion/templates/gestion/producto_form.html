@@ -1,0 +1,15 @@
+{% extends "gestion/base.html" %}
+{% block contenido %}
+<div class="card-custom mx-auto" style="max-width:560px">
+  <h3 class="mb-3">{{ titulo }}</h3>
+  <form method="post">{% csrf_token %}
+    {% for campo in form %}
+      <label class="form-label fw-bold mt-3">{{ campo.label }}</label>
+      {{ campo }}
+      {% if campo.errors %}<div class="text-danger small">{{ campo.errors|join:", " }}</div>{% endif %}
+    {% endfor %}
+    <button type="submit" class="btn btn-danger mt-4">Guardar</button>
+    <a href="{% url 'productos' %}" class="btn btn-secondary mt-4">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends "gestion/base.html" %}
+{% block contenido %}
+<h2 class="mb-3">Registro de movimientos</h2>
+
+<div class="row g-3 mb-3">
+  {% if puede_gestionar %}
+  <div class="col-md-6">
+    <div class="card-custom h-100">
+      <h3>Registrar entrada</h3>
+      <form method="post">{% csrf_token %}
+        {% for campo in entrada_form %}
+          <label class="form-label fw-bold mt-2">{{ campo.label }}</label>
+          {{ campo }}
+          {% if campo.errors %}<div class="text-danger small">{{ campo.errors|join:", " }}</div>{% endif %}
+        {% endfor %}
+        {{ entrada_form.non_field_errors }}
+        <button class="btn btn-danger w-100 mt-3 py-2 fw-bold" type="submit" name="guardar_entrada">GUARDAR ENTRADA</button>
+        <p class="text-muted small mt-2 mb-0">La cantidad se suma automáticamente al stock.</p>
+      </form>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="col-md-6">
+    <div class="card-custom h-100">
+      <h3>Registrar venta</h3>
+      <form method="post">{% csrf_token %}
+        {% for campo in salida_form %}
+          <label class="form-label fw-bold mt-2">{{ campo.label }}</label>
+          {{ campo }}
+          {% if campo.errors %}<div class="text-danger small">{{ campo.errors|join:", " }}</div>{% endif %}
+        {% endfor %}
+        {{ salida_form.non_field_errors }}
+        <button class="btn btn-danger w-100 mt-3 py-2 fw-bold" type="submit" name="registrar_venta">REGISTRAR VENTA</button>
+        <p class="text-muted small mt-2 mb-0">No permite vender más que el stock disponible.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  {% if puede_gestionar %}
+  <div class="col-md-6">
+    <div class="card-custom">
+      <h3>Últimas entradas</h3>
+      {% for e in ultimas_entradas %}
+        <p class="mb-1">{{ e.fecha|date:"d/m H:i" }} — {{ e.producto }} +{{ e.cantidad }} <small class="text-muted">({{ e.usuario.username }})</small></p>
+      {% empty %}<p class="vacio">Sin entradas.</p>{% endfor %}
+    </div>
+  </div>
+  {% endif %}
+  <div class="col-md-6">
+    <div class="card-custom">
+      <h3>Últimas ventas</h3>
+      {% for s in ultimas_salidas %}
+        <p class="mb-1">{{ s.fecha|date:"d/m H:i" }} — {{ s.producto }} −{{ s.cantidad }} <small class="text-muted">({{ s.usuario.username }})</small></p>
+      {% empty %}<p class="vacio">Sin ventas.</p>{% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

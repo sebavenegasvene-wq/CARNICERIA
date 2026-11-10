@@ -1,0 +1,83 @@
+{% extends "gestion/base.html" %}
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <h2 class="m-0">Gestión de productos</h2>
+  
+  <div class="d-flex gap-2">
+    <!-- BOTÓN SIEMPRE VISIBLE -->
+    <a class="btn btn-success fw-bold px-4" href="{% url 'producto_nuevo' %}">
+      + Nuevo Producto
+    </a>
+    <a class="btn btn-secondary" href="{% url 'exportar_precios' %}">
+      Exportar CSV
+    </a>
+  </div>
+</div>
+
+<form method="get" class="mb-3">
+  <input name="q" value="{{ q }}" placeholder="Buscar producto por nombre o categoría…" class="form-control">
+</form>
+
+<div class="card-custom p-0">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Producto</th>
+          <th>Categoría</th>
+          <th>Precio</th>
+          <th>Stock</th>
+          <th>Stock mín.</th>
+          <th>Vencimiento</th>
+          <th>Acciones</th> <!-- SIEMPRE VISIBLE -->
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in productos %}
+        <tr>
+          <td class="fw-bold">{{ p.nombre }}</td>
+          <td>{{ p.categoria }}</td>
+          <td class="fw-bold">$ {{ p.precio_actual|floatformat:"0g" }}</td>
+          
+          <td {% if p.esta_bajo_minimo %}class="text-danger fw-bold"{% endif %}>
+            {{ p.stock_actual }}
+          </td>
+          
+          <td>{{ p.stock_minimo }}</td>
+          
+          <td>{{ p.fecha_vencimiento|date:"d/m/Y"|default:"—" }}</td>
+          
+          <!-- ACCIONES SIEMPRE VISIBLES -->
+          <td>
+            <div class="d-flex gap-1 align-items-center mb-2">
+              <form method="post" action="{% url 'sumar_stock' p.pk %}" class="d-flex gap-1 m-0">
+                {% csrf_token %}
+                <input type="number" name="cantidad" value="1" min="1" class="form-control form-control-sm" style="width: 60px;">
+                <button type="submit" class="btn btn-sm btn-success fw-bold">+</button>
+              </form>
+              
+              <form method="post" action="{% url 'restar_stock' p.pk %}" class="d-flex gap-1 m-0">
+                {% csrf_token %}
+                <input type="number" name="cantidad" value="1" min="1" class="form-control form-control-sm" style="width: 60px;">
+                <button type="submit" class="btn btn-sm btn-warning fw-bold">−</button>
+              </form>
+            </div>
+
+            <div class="d-flex gap-1">
+              <a class="btn btn-sm btn-danger" href="{% url 'cambiar_precio' p.pk %}">Precio</a>
+              <a class="btn btn-sm btn-secondary" href="{% url 'producto_editar' p.pk %}">Editar</a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7" class="text-center text-muted py-4">No hay productos registrados.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}

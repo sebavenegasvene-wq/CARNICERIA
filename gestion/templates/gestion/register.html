@@ -1,0 +1,46 @@
+{% extends "gestion/base.html" %}
+{% block contenido %}
+<div class="card-custom mx-auto" style="max-width:480px">
+  <h3 class="text-center mb-1">Crear cuenta</h3>
+  <p class="text-center text-muted small mb-4">Regístrate para acceder al sistema</p>
+
+  <form method="post">
+    {% csrf_token %}
+    
+    {% if form.errors %}
+      <div class="alert alert-danger py-2 small">
+        {% for field in form %}
+          {% for error in field.errors %}<b>{{ field.label }}:</b> {{ error }}<br>{% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}{{ error }}<br>{% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="mb-3">
+      <label class="form-label fw-bold">Usuario</label>
+      <input type="text" name="username" class="form-control" required autofocus>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-bold">Correo electrónico</label>
+      <input type="email" name="email" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-bold">Contraseña</label>
+      <input type="password" name="password1" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label fw-bold">Confirmar contraseña</label>
+      <input type="password" name="password2" class="form-control" required>
+    </div>
+
+    <button type="submit" class="btn btn-danger w-100 py-2 fw-bold mt-2">REGISTRARME</button>
+  </form>
+
+  <p class="text-center mt-3 mb-0 small">
+    ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión</a>
+  </p>
+</div>
+{% endblock %}

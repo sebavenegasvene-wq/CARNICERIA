@@ -1,0 +1,55 @@
+{% extends "gestion/base.html" %}
+{% block contenido %}
+<h2 class="mb-3">Alertas de caducidad y stock</h2>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card-custom">
+      <h3>Por vencer (próximos 3 días)</h3>
+      {% for a in por_vencer %}
+      <div class="item {% if a.producto.dias_para_vencer <= 1 %}rojo-b{% endif %}">
+        <div>
+          <b>{{ a.producto.nombre }}</b>
+          <small>Vence: {{ a.producto.fecha_vencimiento|date:"d/m/Y" }}</small>
+
+          {% if a.producto.dias_para_vencer <= 1 %}
+            <span class="badge bg-danger">
+          {% else %}
+            <span class="badge bg-warning text-dark">
+          {% endif %}
+            {% if a.producto.dias_para_vencer < 0 %}
+              Vencido
+            {% elif a.producto.dias_para_vencer == 0 %}
+              Vence hoy
+            {% else %}
+              Quedan {{ a.producto.dias_para_vencer }} día(s)
+            {% endif %}
+          </span>
+        </div>
+        <form method="post" action="{% url 'alerta_revisada' a.pk %}">{% csrf_token %}
+          <button class="btn btn-sm btn-secondary" type="submit">Marcar revisada</button>
+        </form>
+      </div>
+      {% empty %}<p class="vacio">Sin productos por vencer.</p>{% endfor %}
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card-custom">
+      <h3>Stock bajo el mínimo</h3>
+      {% for a in stock_bajo %}
+      <div class="item rojo-b">
+        <div>
+          <b>{{ a.producto.nombre }}</b>
+          <small>Stock: {{ a.producto.stock_actual }} · Mínimo: {{ a.producto.stock_minimo }}</small>
+          <span class="badge bg-danger">Reponer</span>
+        </div>
+        <form method="post" action="{% url 'alerta_revisada' a.pk %}">{% csrf_token %}
+          <button class="btn btn-sm btn-secondary" type="submit">Marcar revisada</button>
+        </form>
+      </div>
+      {% empty %}<p class="vacio">Sin productos bajo el mínimo.</p>{% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

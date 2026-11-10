@@ -1,0 +1,29 @@
+{% extends "gestion/base.html" %}
+{% block contenido %}
+<div class="card-custom mx-auto" style="max-width:420px">
+  <h3 class="text-center mb-1">Iniciar sesión</h3>
+  <p class="text-center text-muted small mb-4">Ingresa con tu usuario y contraseña</p>
+
+  <form method="post">
+    {% csrf_token %}
+    
+    {% if form.errors %}
+      <div class="alert alert-danger py-2">Usuario o contraseña incorrectos.</div>
+    {% endif %}
+
+    <label class="form-label fw-bold">Usuario</label>
+    <input type="text" name="username" class="form-control mb-3" required autofocus>
+
+    <label class="form-label fw-bold">Contraseña</label>
+    <input type="password" name="password" class="form-control mb-3" required>
+
+    <input type="hidden" name="next" value="{{ next }}">
+
+    <button type="submit" class="btn btn-danger w-100 py-2 fw-bold">INGRESAR</button>
+  </form>
+
+  <p class="text-center mt-3 mb-0 small">
+    ¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate aquí</a>
+  </p>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "gestion/base.html" %}
+{% block contenido %}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <h2 class="m-0">Reporte de rotación y ventas</h2>
+  <form method="get" class="d-flex gap-2 align-items-center">
+    Últimos
+    <input type="number" name="dias" value="{{ dias }}" min="1" class="form-control" style="width:90px">
+    días
+    <button class="btn btn-secondary" type="submit">Ver</button>
+  </form>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card-custom">
+      <h3>Más vendidos</h3>
+      <table class="table mb-0">
+        <thead class="table-light"><tr><th>Producto</th><th>Unidades</th></tr></thead>
+        <tbody>
+          {% for p in mas_vendidos %}
+          <tr><td>{{ p.nombre }}</td><td class="fw-bold">{{ p.vendido }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card-custom">
+      <h3>Menor rotación</h3>
+      <table class="table mb-0">
+        <thead class="table-light"><tr><th>Producto</th><th>Unidades</th></tr></thead>
+        <tbody>
+          {% for p in baja_rotacion %}
+          <tr><td>{{ p.nombre }}</td><td class="fw-bold">{{ p.vendido }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

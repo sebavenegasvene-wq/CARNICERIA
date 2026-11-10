@@ -1,0 +1,15 @@
+{% extends "gestion/base.html" %}
+{% block contenido %}
+<div class="card-custom mx-auto" style="max-width:520px">
+  <h3>Editar precio</h3>
+  <p><b>{{ producto.nombre }}</b> — precio actual: <b>$ {{ producto.precio_actual|floatformat:"0g" }}</b></p>
+  <form method="post">{% csrf_token %}
+    <label class="form-label fw-bold">{{ form.precio_nuevo.label }}</label>
+    {{ form.precio_nuevo }}
+    {% if form.precio_nuevo.errors %}<div class="text-danger small">{{ form.precio_nuevo.errors|join:", " }}</div>{% endif %}
+    <p class="text-muted small mt-2">Al guardar se registra la fecha, el precio anterior y el nuevo.</p>
+    <button type="submit" class="btn btn-danger">Guardar</button>
+    <a href="{% url 'productos' %}" class="btn btn-secondary">Cancelar</a>
+  </form>
+</div>
+{% endblock %}
